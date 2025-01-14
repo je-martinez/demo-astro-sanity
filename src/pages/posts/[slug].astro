@@ -1,0 +1,15 @@
+---
+// src/pages/posts/[slug].astro
+import { sanityClient } from "sanity:client";
+export async function getStaticPaths() {
+  const posts = await sanityClient.fetch(
+    `*[_type == "posts" && defined(slug)] | order(publishedAt desc)`
+  );
+
+  return posts.map((post: any) => ({
+    params: { slug: post.slug.current }, // Map each post to the required params format
+  }));
+}
+---
+
+<h1>Dynamic Route for {Astro.params.slug}</h1>
