@@ -1,34 +1,20 @@
 ---
-// src/pages/posts/[slug].astro
+export const prerender = false;
 
 import { sanityClient } from "sanity:client";
 import MainLayout from "../../layouts/MainLayout.astro";
 import SanityImage from "../../components/SanityImage.astro";
 import type { Post } from "../../types";
 import PortableText from "../../components/PortableText.astro";
-export async function getStaticPaths() {
-  const posts = await sanityClient.fetch(
-    `*[_type == "posts" && defined(slug)] | order(publishedAt desc)`
-  );
 
-  const paths = posts.map(
-    (post: { slug: { current: string }; title: string; image: string }) => ({
-      params: { slug: post.slug.current },
-      props: {
-        slug: post.slug.current,
-        title: post.title,
-        image: post.image,
-      },
-    })
-  ) as {
-    params: { slug: string };
-    props: Post;
-  }[];
+const { slug } = Astro.params;
 
-  return paths;
-}
+const posts = await sanityClient.fetch(
+  `*[_type == "posts" && slug.current == $slug]`,
+  { slug }
+);
 
-const { title, slug, image, text } = Astro.props;
+const { title, image, content } = posts[0] as Post;
 ---
 
 <MainLayout title={title}>
@@ -41,8 +27,7 @@ const { title, slug, image, text } = Astro.props;
     </div>
     <div>
       <h2>Text</h2>
-      {text}
-      <PortableText value={text} />
+      <PortableText value={content} />
     </div>
   </div>
 </MainLayout>
