@@ -11,6 +11,11 @@ export const postsType = defineType({
       type: "string",
     }),
     defineField({
+      name: "image",
+      title: "Image",
+      type: "image",
+    }),
+    defineField({
       name: "slug",
       title: "Slug",
       type: "slug",
