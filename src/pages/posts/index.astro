@@ -5,7 +5,6 @@ import MainLayout from "../../layouts/MainLayout.astro";
 const posts = await sanityClient.fetch(
   `*[_type == "posts" && defined(slug)] | order(publishedAt desc)`
 );
-console.log(posts);
 ---
 
 <MainLayout title="Posts">
